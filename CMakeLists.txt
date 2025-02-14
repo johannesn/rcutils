@@ -90,7 +90,7 @@ configure_file(
   "logging.py.watch"
   COPYONLY)
 # generate header with logging macros
-set(rcutils_module_path ${CMAKE_CURRENT_SOURCE_DIR})
+set(rcutils_module_path .)
 set(python_code
   "import em"  # implicitly added ; between python statements due to CMake list
   "\
@@ -130,8 +130,6 @@ if(BUILD_TESTING AND NOT RCUTILS_DISABLE_FAULT_INJECTION)
   target_compile_definitions(${PROJECT_NAME} PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
-
 # Needed if pthread is used for thread local storage.
 if(IOS AND IOS_SDK_VERSION LESS 10.0)
   ament_export_libraries(pthread)
@@ -161,7 +159,9 @@ if(BUILD_TESTING)
 
   if(HAVE_LIBATOMICS AND NOT WIN32)
     # Exporting link flag since it won't pass ament_export_libraries() existance check
-    ament_export_link_flags("-latomic")
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_DL_LIBS} atomic)
+  else()
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
   endif()
 
   if(ament_cmake_cppcheck_FOUND)
@@ -324,7 +324,7 @@ if(BUILD_TESTING)
 
   rcutils_custom_add_gtest(test_filesystem
     test/test_filesystem.cpp
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    WORKING_DIRECTORY .
   )
   if(TARGET test_filesystem)
     ament_target_dependencies(test_filesystem "osrf_testing_tools_cpp")
@@ -582,6 +582,8 @@ if(BUILD_TESTING)
   if(TARGET test_macros)
     target_link_libraries(test_macros ${PROJECT_NAME})
   endif()
+else()
+  target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
 endif()
 
 # Export old-style CMake variables
