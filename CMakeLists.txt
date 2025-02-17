@@ -90,7 +90,7 @@ configure_file(
   "logging.py.watch"
   COPYONLY)
 # generate header with logging macros
-set(rcutils_module_path .)
+set(rcutils_module_path ${CMAKE_CURRENT_SOURCE_DIR})
 set(python_code
   "import em"  # implicitly added ; between python statements due to CMake list
   "\
@@ -324,7 +324,7 @@ if(BUILD_TESTING)
 
   rcutils_custom_add_gtest(test_filesystem
     test/test_filesystem.cpp
-    WORKING_DIRECTORY .
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
   if(TARGET test_filesystem)
     ament_target_dependencies(test_filesystem "osrf_testing_tools_cpp")
