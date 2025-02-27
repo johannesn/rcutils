@@ -179,7 +179,9 @@ if(BUILD_TESTING)
 
   if(HAVE_LIBATOMICS AND NOT WIN32)
     # Exporting link flag since it won't pass ament_export_libraries() existance check
-    ament_export_link_flags("-latomic")
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_DL_LIBS} atomic)
+  else()
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
   endif()
 
   if(ament_cmake_cppcheck_FOUND)
