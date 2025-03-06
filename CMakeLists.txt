@@ -146,8 +146,6 @@ if(BUILD_TESTING AND NOT RCUTILS_DISABLE_FAULT_INJECTION)
   target_compile_definitions(${PROJECT_NAME} PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
-
 # Needed if pthread is used for thread local storage.
 if(IOS AND IOS_SDK_VERSION LESS 10.0)
   ament_export_libraries(pthread)
@@ -179,7 +177,7 @@ if(BUILD_TESTING)
 
   if(HAVE_LIBATOMICS AND NOT WIN32)
     # Exporting link flag since it won't pass ament_export_libraries() existance check
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_DL_LIBS} atomic)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_DL_LIBS} atomic )
   else()
     target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
   endif()
@@ -599,6 +597,8 @@ if(BUILD_TESTING)
   if(TARGET benchmark_err_handle)
     target_link_libraries(benchmark_err_handle ${PROJECT_NAME})
   endif()
+else()
+  target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS})
 endif()
 
 # Export old-style CMake variables
